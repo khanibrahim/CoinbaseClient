@@ -1,0 +1,93 @@
+﻿<Window x:Class="CoinbaseClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
+        Title="Coinbase Client" SizeToContent="Height" Width="625"
+        >
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="15" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" >
+            <GroupBox Header="Buy/Sell">
+                <StackPanel >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0">Type:</Label>
+                        <RadioButton Name="limit" Grid.Column="2">Limit</RadioButton>
+                        <RadioButton Name="market" Grid.Column="4">Market</RadioButton>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0">Side:</Label>
+                        <RadioButton Name="buy" Grid.Column="2" >Buy</RadioButton>
+                        <RadioButton Name="sell" Grid.Column="4">Sell</RadioButton>
+                    </Grid>
+                    <Label>Product</Label>
+                    <ComboBox Name="productIds" Margin="0,5,0,5">
+                    </ComboBox>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0">Price</Label>
+                        <TextBox Grid.Column="2" PreviewTextInput="NumberValidationTextBox" Name="price" Margin="0,5,0,5" IsEnabled="True" TextChanged="price_TextChanged" ></TextBox>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="2" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0">Size</Label>
+                        <TextBox Grid.Column="2" PreviewTextInput="NumberValidationTextBox" Name="size" Margin="0,5,0,5" IsEnabled="True" TextChanged="size_TextChanged"></TextBox>
+                    </Grid>
+                    <Button Click="Place_Order">Place Order</Button>
+                </StackPanel>
+            </GroupBox>
+            <Separator></Separator>
+            <GroupBox Header="Order">
+                <StackPanel>
+                    <ComboBox Name="cancelOrder"  Margin="0,5,0,5">
+                    </ComboBox>
+                    <Button Name="cancelOrderButton"  Margin="0,5,0,5" Click="cancelOrderButton_Click">Cancel Order</Button>
+
+                    <ComboBox Name="getOrderStatus" Margin="0,5,0,5"></ComboBox>
+                    <Button Name="getOrderStatusButton" Margin="0,5,0,5" Click="getOrderStatusButton_Click">Get Order Status</Button>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+        <StackPanel Grid.Column="2" >
+            <GroupBox Header="Other">
+                <StackPanel >
+                    <Button Name="FetNetPosition" Margin="0,5,0,5" Click="FetNetPosition_Click">Fetch Net Position</Button>
+                    <Button Margin="0,5,0,5" Name="SquareOffPosition" Click="SquareOffPosition_Click">Square Off Position</Button>
+                    <Button Name="GetAvailableMargin" Margin="0,5,0,5" Click="GetAvailableMargin_Click">Get Available Margin</Button>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Background="Maroon" Height="50">
+                <Label Name="realizedUnrealized" Foreground="White" Background="gray" ></Label>
+            </GroupBox>
+            <GroupBox Background="Maroon" Height="200">
+                <Label Name="notificationPanle" Foreground="White" Background="Navy" >Recent History</Label>
+            </GroupBox>
+        </StackPanel>
+    </Grid>
+</Window>
