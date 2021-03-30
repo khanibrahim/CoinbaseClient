@@ -1,18 +1,13 @@
 ﻿using CoinbaseClassLibrary;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Security.Policy;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace CoinbaseClientLibrary
@@ -24,6 +19,7 @@ namespace CoinbaseClientLibrary
         private string apiKey;
         private string apiSecret;
         private List<Product> products;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public CoinbaseApiLayer(string bitmexKey = "", string bitmexSecret = "")
         {
@@ -48,9 +44,7 @@ namespace CoinbaseClientLibrary
 
         public string PlaceOrder(string type, string side, string productId, string size, string price)
         {
-
             Dictionary<string, string> param = new Dictionary<string, string>();
-
             param["type"] = type;
             param["side"] = side;
             param["product_id"] = productId;
@@ -112,7 +106,7 @@ namespace CoinbaseClientLibrary
 
         public string RealizedUnrealized()
         {
-            return DateTime.Now.ToString();
+            return "Not Implemented : " + DateTime.Now.ToString();
         }
 
         public string SquareOff()
@@ -122,6 +116,8 @@ namespace CoinbaseClientLibrary
             var accounts = JsonConvert.DeserializeObject<List<Account>>(result).Where(x => x.Currency != "USD" && x.Balance != 0);
             try
             {
+                return "Not Implemented";
+
                 foreach (var account in accounts)
                 {
                     this.PlaceOrder(account.Balance > 0 ? "Sell" : "Buy", "Market", account.Id, "0", account.Balance.ToString());
@@ -142,12 +138,10 @@ namespace CoinbaseClientLibrary
 
         private string Query(string method, string function, Dictionary<string, string> postParameters = null)
         {
-            //string paramData = json ? BuildJSON(postParameters) : BuildQueryData(postParameters);
             string url = domain + function + ((method == "GET" && postParameters != null) ? "?" + BuildQueryData(postParameters) : "");
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
             webRequest.Method = method;
-            // string body = "{\"price\": \"1.0\", \"size\": \"1.0\", \"side\": \"buy\", \"product_id\": \"BTC-USD\"}";
             string body = method == "GET" ? null : BuildJSON(postParameters);
             string expires = GetExpires().ToString();
             var message = $"{expires}{method}{function}{body}";
@@ -161,19 +155,8 @@ namespace CoinbaseClientLibrary
 
             try
             {
-                //if (postData != "")
-                //{
-                //    webRequest.ContentType = json ? "application/json" : "application/x-www-form-urlencoded";
-                //    var data = Encoding.UTF8.GetBytes(postData);
-                //    using (var stream = webRequest.GetRequestStream())
-                //    {
-                //        stream.Write(data, 0, data.Length);
-                //    }
-                //}
-
                 if (method == "POST")
                 {
-
 
                     string postData = "";
 
@@ -182,7 +165,6 @@ namespace CoinbaseClientLibrary
                         postData += HttpUtility.UrlEncode(key) + "="
                               + HttpUtility.UrlEncode(postParameters[key]) + "&";
                     }
-
 
                     byte[] data = Encoding.ASCII.GetBytes(body);
 
@@ -222,7 +204,6 @@ namespace CoinbaseClientLibrary
 
         internal static string GetHMACInHex(string key, string data)
         {
-            // var hmacKey = Encoding.UTF8.GetBytes(key);
             byte[] hmacKey = Convert.FromBase64String(key);
 
             var dataBytes = Encoding.UTF8.GetBytes(data);
@@ -230,7 +211,6 @@ namespace CoinbaseClientLibrary
             using (var hmac = new HMACSHA256(hmacKey))
             {
                 var sig = hmac.ComputeHash(dataBytes);
-                // return ByteToHexString(sig);
                 return Convert.ToBase64String(sig);
             }
         }

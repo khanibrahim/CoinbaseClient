@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System;
 using System.Threading.Tasks;
-using System.Threading;
 using System.Configuration;
 
 namespace CoinbaseClient

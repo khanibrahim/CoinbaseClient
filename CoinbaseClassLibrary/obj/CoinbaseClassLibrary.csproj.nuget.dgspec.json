@@ -34,6 +34,10 @@
       "frameworks": {
         "net452": {
           "dependencies": {
+            "NLog": {
+              "target": "Package",
+              "version": "[4.7.9, )"
+            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[12.0.3, )"
