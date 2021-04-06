@@ -3,7 +3,6 @@ C:\Users\Mohammed Ibrahim\Documents\Visual Studio 2015\Projects\CoinbaseClient\C
 C:\Users\Mohammed Ibrahim\Documents\Visual Studio 2015\Projects\CoinbaseClient\CoinbaseClient\bin\Debug\CoinbaseClient.pdb
 C:\Users\Mohammed Ibrahim\Documents\Visual Studio 2015\Projects\CoinbaseClient\CoinbaseClient\bin\Debug\CoinbaseClassLibrary.dll
 C:\Users\Mohammed Ibrahim\Documents\Visual Studio 2015\Projects\CoinbaseClient\CoinbaseClient\bin\Debug\Newtonsoft.Json.dll
-C:\Users\Mohammed Ibrahim\Documents\Visual Studio 2015\Projects\CoinbaseClient\CoinbaseClient\bin\Debug\NLog.dll
 C:\Users\Mohammed Ibrahim\Documents\Visual Studio 2015\Projects\CoinbaseClient\CoinbaseClient\bin\Debug\CoinbaseClassLibrary.pdb
 C:\Users\Mohammed Ibrahim\Documents\Visual Studio 2015\Projects\CoinbaseClient\CoinbaseClient\obj\Debug\CoinbaseClient.csprojAssemblyReference.cache
 C:\Users\Mohammed Ibrahim\Documents\Visual Studio 2015\Projects\CoinbaseClient\CoinbaseClient\obj\Debug\MainWindow.baml

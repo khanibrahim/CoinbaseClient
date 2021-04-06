@@ -40,13 +40,6 @@ namespace CoinbaseClassLibrary
         [JsonProperty("status_message")]
         public object StatusMessage { get; set; }
     }
-    public partial class PositionRefreshmentAmount
-    {
-        [JsonProperty("oneDayRenewalAmount")]
-        public string OneDayRenewalAmount { get; set; }
-        [JsonProperty("twoDayRenewalAmount")]
-        public string TwoDayRenewalAmount { get; set; }
-    }
     public partial class Order
     {
         [JsonProperty("id")]
@@ -139,4 +132,6 @@ namespace CoinbaseClassLibrary
         [EnumMember(Value = "market")]
         Market
     }
+
+
 }

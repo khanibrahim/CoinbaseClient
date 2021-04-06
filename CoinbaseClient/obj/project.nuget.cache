@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "dFUb0gfinisfFmFt54dWCMpjgCWEkeBh5enCEu//JsA3v1FFo7cy5JKws+TXgU2CSxG6yBeqchHWaryLEwhMQw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Mohammed Ibrahim\\Documents\\Visual Studio 2015\\Projects\\CoinbaseClient\\CoinbaseClient\\CoinbaseClient.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Mohammed Ibrahim\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

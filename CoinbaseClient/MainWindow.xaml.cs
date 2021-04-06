@@ -15,9 +15,9 @@ namespace CoinbaseClient
     public partial class MainWindow : Window
     {
 
-
         private static readonly string bitmexKey = ConfigurationManager.AppSettings["bitmexKey"];
         private static readonly string bitmexSecret = ConfigurationManager.AppSettings["bitmexSecret"];
+        private static readonly string ErrorText = ConfigurationManager.AppSettings["ErrorText"];
 
         private static List<string> History = new List<string>();
         readonly CoinbaseApiLayer CAL = new CoinbaseApiLayer(bitmexKey, bitmexSecret);
@@ -26,7 +26,6 @@ namespace CoinbaseClient
         {
             InitializeComponent();
             InitiateData();
-
             var interval = TimeSpan.FromSeconds(3);
             RunPeriodicAsync(OnTick, interval);
 
@@ -67,20 +66,24 @@ namespace CoinbaseClient
                 try
                 {
                     string orderid = CAL.PlaceOrder(limit.IsChecked == true ? "limit" : "market", buy.IsChecked == true ? "buy" : "sell", productIds.Text, size.Text, price.Text);
+                    if (orderid == "Error")
+                    {
+                        throw new Exception("Error");
+                    }
                     if (!string.IsNullOrEmpty(orderid))
                     {
-                        History.Add($"Last Action: Order placed successfully with order ID \n {orderid}");
+                        History.Add($"Action: Order placed successfully with order ID \n {orderid}");
                     }
                     else
                     {
-                        History.Add($"Last Action: Order could not be placed");
+                        History.Add($"Action: Order could not be placed");
                     }
                     notificationPanle.Content = History.Skip(Math.Max(0, History.Count() - 6)).Aggregate((x, y) => x + "\n" + y).ToString(); ;
                     GetOrders();
                 }
                 catch
                 {
-                    MessageBox.Show("Request Failed");
+                    MessageBox.Show(ErrorText);
                 }
             }
             else
@@ -114,29 +117,71 @@ namespace CoinbaseClient
         private void getOrderStatusButton_Click(object sender, RoutedEventArgs e)
         {
             KeyValuePair<string, string> selectedEntry = (KeyValuePair<string, string>)getOrderStatus.SelectedItem;
-            MessageBox.Show($"Order Status Is : {CAL.GetOrderStatus(selectedEntry.Key)}");
+            string status = CAL.GetOrderStatus(selectedEntry.Key);
+            if (status == "Error")
+            {
+                MessageBox.Show(ErrorText);
+            }
+            else
+            {
+                MessageBox.Show($"Order Status Is : {status}");
+            }
         }
 
         private void cancelOrderButton_Click(object sender, RoutedEventArgs e)
         {
             KeyValuePair<string, string> selectedEntry = (KeyValuePair<string, string>)cancelOrder.SelectedItem;
-            MessageBox.Show(CAL.CancelOrder(selectedEntry.Key));
+            string response = CAL.CancelOrder(selectedEntry.Key);
+            if (response == "Error")
+            {
+                MessageBox.Show(ErrorText);
+            }
+            else
+            {
+                MessageBox.Show(response);
+            }
             GetOrders();
         }
 
         private void FetNetPosition_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(CAL.GetPosition());
+
+            string response = CAL.GetPosition();
+            if (response == "Error")
+            {
+                MessageBox.Show(ErrorText);
+            }
+            else
+            {
+                MessageBox.Show(response);
+            }
         }
 
         private void GetAvailableMargin_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(CAL.GetMargin());
+
+            string response = CAL.GetMargin();
+            if (response == "Error")
+            {
+                MessageBox.Show(ErrorText);
+            }
+            else
+            {
+                MessageBox.Show(response);
+            }
         }
 
         private void SquareOffPosition_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(CAL.SquareOff());
+            string response = CAL.SquareOff();
+            if (response == "Error")
+            {
+                MessageBox.Show(ErrorText);
+            }
+            else
+            {
+                MessageBox.Show(response);
+            }
         }
 
         private static async Task RunPeriodicAsync(Action onTick, TimeSpan interval)
@@ -149,8 +194,6 @@ namespace CoinbaseClient
                     await Task.Delay(interval);
             }
         }
-
-
 
         private void OnTick()
         {

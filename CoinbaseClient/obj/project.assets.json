@@ -10,6 +10,19 @@
         "runtime": {
           "lib/net45/Newtonsoft.Json.dll": {}
         }
+      },
+      "CoinbaseClassLibrary/1.0.0": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.5.2",
+        "dependencies": {
+          "Newtonsoft.Json": "12.0.3"
+        },
+        "compile": {
+          "bin/placeholder/CoinbaseClassLibrary.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CoinbaseClassLibrary.dll": {}
+        }
       }
     },
     ".NETFramework,Version=v4.5.2/win": {
@@ -20,6 +33,19 @@
         },
         "runtime": {
           "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "CoinbaseClassLibrary/1.0.0": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.5.2",
+        "dependencies": {
+          "Newtonsoft.Json": "12.0.3"
+        },
+        "compile": {
+          "bin/placeholder/CoinbaseClassLibrary.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CoinbaseClassLibrary.dll": {}
         }
       }
     },
@@ -32,6 +58,19 @@
         "runtime": {
           "lib/net45/Newtonsoft.Json.dll": {}
         }
+      },
+      "CoinbaseClassLibrary/1.0.0": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.5.2",
+        "dependencies": {
+          "Newtonsoft.Json": "12.0.3"
+        },
+        "compile": {
+          "bin/placeholder/CoinbaseClassLibrary.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CoinbaseClassLibrary.dll": {}
+        }
       }
     },
     ".NETFramework,Version=v4.5.2/win-x86": {
@@ -42,6 +81,19 @@
         },
         "runtime": {
           "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "CoinbaseClassLibrary/1.0.0": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.5.2",
+        "dependencies": {
+          "Newtonsoft.Json": "12.0.3"
+        },
+        "compile": {
+          "bin/placeholder/CoinbaseClassLibrary.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CoinbaseClassLibrary.dll": {}
         }
       }
     }
@@ -77,11 +129,16 @@
         "newtonsoft.json.nuspec",
         "packageIcon.png"
       ]
+    },
+    "CoinbaseClassLibrary/1.0.0": {
+      "type": "project",
+      "path": "../CoinbaseClassLibrary/CoinbaseClassLibrary.csproj",
+      "msbuildProject": "../CoinbaseClassLibrary/CoinbaseClassLibrary.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.5.2": [
-      "Newtonsoft.Json >= 12.0.3"
+      "CoinbaseClassLibrary >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -90,11 +147,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Mohammed Ibrahim\\Documents\\Visual Studio 2015\\Projects\\CoinbaseClient\\CoinbaseClassLibrary\\CoinbaseClassLibrary.csproj",
-      "projectName": "CoinbaseClassLibrary",
-      "projectPath": "C:\\Users\\Mohammed Ibrahim\\Documents\\Visual Studio 2015\\Projects\\CoinbaseClient\\CoinbaseClassLibrary\\CoinbaseClassLibrary.csproj",
+      "projectUniqueName": "C:\\Users\\Mohammed Ibrahim\\Documents\\Visual Studio 2015\\Projects\\CoinbaseClient\\CoinbaseClient\\CoinbaseClient.csproj",
+      "projectName": "CoinbaseClient",
+      "projectPath": "C:\\Users\\Mohammed Ibrahim\\Documents\\Visual Studio 2015\\Projects\\CoinbaseClient\\CoinbaseClient\\CoinbaseClient.csproj",
       "packagesPath": "C:\\Users\\Mohammed Ibrahim\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Mohammed Ibrahim\\Documents\\Visual Studio 2015\\Projects\\CoinbaseClient\\CoinbaseClassLibrary\\obj\\",
+      "outputPath": "C:\\Users\\Mohammed Ibrahim\\Documents\\Visual Studio 2015\\Projects\\CoinbaseClient\\CoinbaseClient\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "configFilePaths": [
@@ -110,19 +167,16 @@
       },
       "frameworks": {
         "net452": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Mohammed Ibrahim\\Documents\\Visual Studio 2015\\Projects\\CoinbaseClient\\CoinbaseClassLibrary\\CoinbaseClassLibrary.csproj": {
+              "projectPath": "C:\\Users\\Mohammed Ibrahim\\Documents\\Visual Studio 2015\\Projects\\CoinbaseClient\\CoinbaseClassLibrary\\CoinbaseClassLibrary.csproj"
+            }
+          }
         }
       }
     },
     "frameworks": {
-      "net452": {
-        "dependencies": {
-          "Newtonsoft.Json": {
-            "target": "Package",
-            "version": "[12.0.3, )"
-          }
-        }
-      }
+      "net452": {}
     },
     "runtimes": {
       "win": {

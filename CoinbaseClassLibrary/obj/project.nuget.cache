@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "O9qmOk97WUk+T3U/qz7F748pkUIFp6uC0gt+DKsLsT03UXYSl43+s7hqu6AePlY575nMRBvhlFzsy5wbcQOuXg==",
+  "dgSpecHash": "6XCUSWcGSlWd62Yj/dbelt3xDvoLUtQBSQqQWVfFVuK1SrOFP8f6CPrvV3iIuCQ3eISN3oQUdDdRhh10CbvMzw==",
   "success": true,
   "projectFilePath": "C:\\Users\\Mohammed Ibrahim\\Documents\\Visual Studio 2015\\Projects\\CoinbaseClient\\CoinbaseClassLibrary\\CoinbaseClassLibrary.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Mohammed Ibrahim\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
-    "C:\\Users\\Mohammed Ibrahim\\.nuget\\packages\\nlog\\4.7.9\\nlog.4.7.9.nupkg.sha512"
+    "C:\\Users\\Mohammed Ibrahim\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512"
   ],
   "logs": []
 }

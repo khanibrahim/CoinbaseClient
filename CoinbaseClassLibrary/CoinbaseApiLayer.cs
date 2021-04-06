@@ -1,8 +1,8 @@
 ﻿using CoinbaseClassLibrary;
 using Newtonsoft.Json;
-using NLog;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -18,8 +18,7 @@ namespace CoinbaseClientLibrary
         private const string domain = "https://api-public.sandbox.pro.coinbase.com";
         private string apiKey;
         private string apiSecret;
-        private List<Product> products;
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly string logPath = ConfigurationManager.AppSettings["logPath"];
 
         public CoinbaseApiLayer(string bitmexKey = "", string bitmexSecret = "")
         {
@@ -27,18 +26,37 @@ namespace CoinbaseClientLibrary
             this.apiSecret = bitmexSecret;
         }
 
-
         public List<Product> GetProducts()
         {
-            var result = Query("GET", "/products");
-            this.products = JsonConvert.DeserializeObject<List<Product>>(result);
+            List<Product> products = new List<Product>();
+            try
+            {
+                var result = Query("GET", "/products");
+                products = JsonConvert.DeserializeObject<List<Product>>(result);
+                products = products.Where(x => x.Id == "BTC-USD").ToList();
+            }
+            catch (Exception e)
+            {
+                WriteLog(e.Message);
+            }
             return products;
         }
 
         public List<Order> GetOrders()
         {
-            var result = Query("GET", "/orders?status=all");
-            var orders = JsonConvert.DeserializeObject<List<Order>>(result);
+            List<Order> orders = new List<Order>();
+            try
+            {
+                // var result = Query("GET", "/orders?status=all");
+                var result = Query("GET", "/orders");
+                orders = JsonConvert.DeserializeObject<List<Order>>(result);
+                orders = orders.Where(x => x.ProductId == "BTC-USD").ToList();
+            }
+            catch (Exception e)
+            {
+                WriteLog(e.Message);
+            }
+
             return orders;
         }
 
@@ -65,30 +83,70 @@ namespace CoinbaseClientLibrary
                     param["funds"] = price;
                 }
             }
-            var result = Query("POST", "/orders", param);
-            var order = JsonConvert.DeserializeObject<Order>(result);
-            return order.Id;
+            try
+            {
+                var result = Query("POST", "/orders", param);
+                var order = JsonConvert.DeserializeObject<Order>(result);
+                return order.Id;
+            }
+            catch (Exception e)
+            {
+                WriteLog(e.Message);
+                return "Error";
+            }
+
         }
 
         public string GetOrderStatus(string orderId)
         {
-            var result = Query("GET", $"/orders/{orderId}");
-            var order = JsonConvert.DeserializeObject<Order>(result);
-            return order.Status;
+            try
+            {
+                var result = Query("GET", $"/orders/{orderId}");
+                var order = JsonConvert.DeserializeObject<Order>(result);
+                return order.Status;
+
+            }
+            catch (Exception e)
+            {
+
+                WriteLog(e.Message);
+                return "Error";
+            }
+
         }
 
         public string GetPosition()
         {
-            var result = Query("GET", $"/accounts");
-            var accounts = JsonConvert.DeserializeObject<List<Account>>(result);
-            return accounts.Where(x => x.Currency != "USD").Select(x => (int)x.Balance + ":" + x.Currency + " \n ").Aggregate((x1, x2) => x1 + x2);
+            try
+            {
+                var result = Query("GET", $"/accounts");
+                var accounts = JsonConvert.DeserializeObject<List<Account>>(result);
+                return accounts.Where(x => x.Currency == "BTC").Select(x => (float)x.Balance + ":" + x.Currency + " \n ").Aggregate((x1, x2) => x1 + x2);
+            }
+            catch (Exception e)
+            {
+
+                WriteLog(e.Message);
+                return "Error";
+            }
+
         }
 
         public string GetMargin()
         {
-            var result = Query("GET", $"/accounts");
-            var accounts = JsonConvert.DeserializeObject<List<Account>>(result);
-            return accounts.Where(x => x.Currency == "USD").Select(x => (int)x.Balance + ":" + x.Currency + " \n ").FirstOrDefault().ToString();
+            try
+            {
+                var result = Query("GET", $"/accounts");
+                var accounts = JsonConvert.DeserializeObject<List<Account>>(result);
+                return accounts.Where(x => x.Currency == "USD").Select(x => (int)x.Balance + ":" + x.Currency + " \n ").FirstOrDefault().ToString();
+            }
+            catch (Exception e)
+            {
+
+                WriteLog(e.Message);
+                return "Error";
+            }
+
         }
 
         public string CancelOrder(string orderId)
@@ -97,44 +155,43 @@ namespace CoinbaseClientLibrary
             {
                 Query("DELETE", $"/orders/{orderId}");
             }
-            catch
+            catch (Exception e)
             {
-                return "Error Occured";
+                WriteLog(e.Message);
+                return "Error";
             }
             return "Cancelled Sucessfully";
         }
 
         public string RealizedUnrealized()
         {
-            return "Not Implemented : " + DateTime.Now.ToString();
+            // API Does not provide endpoint
+            return DateTime.Now.ToString();
         }
 
         public string SquareOff()
         {
 
             var result = Query("GET", $"/accounts");
-            var accounts = JsonConvert.DeserializeObject<List<Account>>(result).Where(x => x.Currency != "USD" && x.Balance != 0);
+            var accounts = JsonConvert.DeserializeObject<List<Account>>(result).Where(x => x.Currency == "BTC" && x.Balance != 0);
             try
             {
-                return "Not Implemented";
-
                 foreach (var account in accounts)
                 {
-                    this.PlaceOrder(account.Balance > 0 ? "Sell" : "Buy", "Market", account.Id, "0", account.Balance.ToString());
+                    this.PlaceOrder("market", account.Balance > 0 ? "sell" : "buy", "BTC-USD", account.Balance.ToString(), "");
                 }
 
                 return "Success";
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                WriteLog(e.Message);
                 return "Error";
             }
 
         }
 
         #region Basic Functionality
-
 
         private string Query(string method, string function, Dictionary<string, string> postParameters = null)
         {
@@ -223,14 +280,22 @@ namespace CoinbaseClientLibrary
         private string BuildQueryData(Dictionary<string, string> param)
         {
             if (param == null)
+            {
                 return "";
-
+            }
             StringBuilder b = new StringBuilder();
             foreach (var item in param)
+            {
                 b.Append(string.Format("&{0}={1}", item.Key, WebUtility.UrlEncode(item.Value)));
-
-            try { return b.ToString().Substring(1); }
-            catch (Exception) { return ""; }
+            }
+            try
+            {
+                return b.ToString().Substring(1);
+            }
+            catch (Exception)
+            {
+                return "";
+            }
         }
 
         private string BuildJSON(Dictionary<string, string> param)
@@ -245,7 +310,14 @@ namespace CoinbaseClientLibrary
             return "{" + string.Join(",", entries) + "}";
         }
 
-
+        public static void WriteLog(string strMessage)
+        {
+            FileStream objFilestream = new FileStream(logPath, FileMode.Append, FileAccess.Write);
+            StreamWriter objStreamWriter = new StreamWriter((Stream)objFilestream);
+            objStreamWriter.WriteLine(strMessage);
+            objStreamWriter.Close();
+            objFilestream.Close();
+        }
         #endregion
 
     }
