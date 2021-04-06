@@ -15,9 +15,9 @@ namespace CoinbaseClientLibrary
     public class CoinbaseApiLayer
     {
 
-        private const string domain = "https://api-public.sandbox.pro.coinbase.com";
         private string apiKey;
         private string apiSecret;
+        private static readonly string baseURL = ConfigurationManager.AppSettings["baseURL"];
         private static readonly string logPath = ConfigurationManager.AppSettings["logPath"];
 
         public CoinbaseApiLayer(string bitmexKey = "", string bitmexSecret = "")
@@ -195,7 +195,7 @@ namespace CoinbaseClientLibrary
 
         private string Query(string method, string function, Dictionary<string, string> postParameters = null)
         {
-            string url = domain + function + ((method == "GET" && postParameters != null) ? "?" + BuildQueryData(postParameters) : "");
+            string url = BaseURL + function + ((method == "GET" && postParameters != null) ? "?" + BuildQueryData(postParameters) : "");
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
             webRequest.Method = method;

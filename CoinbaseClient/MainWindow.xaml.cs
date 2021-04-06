@@ -17,7 +17,7 @@ namespace CoinbaseClient
 
         private static readonly string bitmexKey = ConfigurationManager.AppSettings["bitmexKey"];
         private static readonly string bitmexSecret = ConfigurationManager.AppSettings["bitmexSecret"];
-        private static readonly string ErrorText = ConfigurationManager.AppSettings["ErrorText"];
+        private static readonly string errorText = ConfigurationManager.AppSettings["errorText"];
 
         private static List<string> History = new List<string>();
         readonly CoinbaseApiLayer CAL = new CoinbaseApiLayer(bitmexKey, bitmexSecret);
@@ -28,7 +28,6 @@ namespace CoinbaseClient
             InitiateData();
             var interval = TimeSpan.FromSeconds(3);
             RunPeriodicAsync(OnTick, interval);
-
         }
 
         private void InitiateData()
@@ -83,7 +82,7 @@ namespace CoinbaseClient
                 }
                 catch
                 {
-                    MessageBox.Show(ErrorText);
+                    MessageBox.Show(errorText);
                 }
             }
             else
@@ -120,7 +119,7 @@ namespace CoinbaseClient
             string status = CAL.GetOrderStatus(selectedEntry.Key);
             if (status == "Error")
             {
-                MessageBox.Show(ErrorText);
+                MessageBox.Show(errorText);
             }
             else
             {
@@ -134,7 +133,7 @@ namespace CoinbaseClient
             string response = CAL.CancelOrder(selectedEntry.Key);
             if (response == "Error")
             {
-                MessageBox.Show(ErrorText);
+                MessageBox.Show(errorText);
             }
             else
             {
@@ -149,7 +148,7 @@ namespace CoinbaseClient
             string response = CAL.GetPosition();
             if (response == "Error")
             {
-                MessageBox.Show(ErrorText);
+                MessageBox.Show(errorText);
             }
             else
             {
@@ -163,7 +162,7 @@ namespace CoinbaseClient
             string response = CAL.GetMargin();
             if (response == "Error")
             {
-                MessageBox.Show(ErrorText);
+                MessageBox.Show(errorText);
             }
             else
             {
@@ -176,7 +175,7 @@ namespace CoinbaseClient
             string response = CAL.SquareOff();
             if (response == "Error")
             {
-                MessageBox.Show(ErrorText);
+                MessageBox.Show(errorText);
             }
             else
             {
