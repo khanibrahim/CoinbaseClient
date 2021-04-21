@@ -15,53 +15,55 @@ namespace CoinbaseClientLibrary
     public class CoinbaseApiLayer
     {
 
-        private string apiKey;
-        private string apiSecret;
-        private static readonly string baseURL = ConfigurationManager.AppSettings["baseURL"];
-        private static readonly string logPath = ConfigurationManager.AppSettings["logPath"];
-
-        public CoinbaseApiLayer(string bitmexKey = "", string bitmexSecret = "")
+        public ReturnValue<List<Product>> GetProducts()
         {
-            this.apiKey = bitmexKey;
-            this.apiSecret = bitmexSecret;
-        }
-
-        public List<Product> GetProducts()
-        {
+            ReturnValue<List<Product>> returnValue = new ReturnValue<List<Product>>();
             List<Product> products = new List<Product>();
             try
             {
-                var result = Query("GET", "/products");
+                var result = CommonFunctions.Query("GET", "/products");
                 products = JsonConvert.DeserializeObject<List<Product>>(result);
                 products = products.Where(x => x.Id == "BTC-USD").ToList();
+                returnValue.status = "Success";
+                returnValue.value = products;
+                return returnValue;
             }
             catch (Exception e)
             {
-                WriteLog(e.Message);
+                CommonFunctions.WriteLog(e.Message);
+                returnValue.status = "Error";
+                returnValue.message = "Some Error Occured";
+                return returnValue;
+
             }
-            return products;
         }
 
-        public List<Order> GetOrders()
+        public ReturnValue<List<Order>> GetOrders()
         {
+            ReturnValue<List<Order>> returnValue = new ReturnValue<List<Order>>();
             List<Order> orders = new List<Order>();
             try
             {
-                // var result = Query("GET", "/orders?status=all");
-                var result = Query("GET", "/orders");
+                var result = CommonFunctions.Query("GET", "/orders");
                 orders = JsonConvert.DeserializeObject<List<Order>>(result);
                 orders = orders.Where(x => x.ProductId == "BTC-USD").ToList();
+                returnValue.status = "Success";
+                returnValue.value = orders;
+                return returnValue;
             }
             catch (Exception e)
             {
-                WriteLog(e.Message);
+                CommonFunctions.WriteLog(e.Message);
+                returnValue.status = "Error";
+                returnValue.message = "Some Error Occured";
+                return returnValue;
             }
 
-            return orders;
         }
 
-        public string PlaceOrder(string type, string side, string productId, string size, string price)
+        public ReturnValue<string> PlaceOrder(string type, string side, string productId, string size, string price)
         {
+            ReturnValue<string> returnValue = new ReturnValue<string>();
             Dictionary<string, string> param = new Dictionary<string, string>();
             param["type"] = type;
             param["side"] = side;
@@ -85,94 +87,114 @@ namespace CoinbaseClientLibrary
             }
             try
             {
-                var result = Query("POST", "/orders", param);
+                var result = CommonFunctions.Query("POST", "/orders", param);
                 var order = JsonConvert.DeserializeObject<Order>(result);
-                return order.Id;
+
+                returnValue.status = "Success";
+                returnValue.value = order.Id;
+                return returnValue;
             }
             catch (Exception e)
             {
-                WriteLog(e.Message);
-                return "Error";
+                CommonFunctions.WriteLog(e.Message);
+                returnValue.status = "Error";
+                returnValue.message = "Order Could Not Be Placed";
+                return returnValue;
             }
 
         }
 
-        public string GetOrderStatus(string orderId)
+        public ReturnValue<string> GetOrderStatus(string orderId)
         {
+            ReturnValue<string> returnValue = new ReturnValue<string>();
+
             try
             {
-                var result = Query("GET", $"/orders/{orderId}");
+                var result = CommonFunctions.Query("GET", $"/orders/{orderId}");
                 var order = JsonConvert.DeserializeObject<Order>(result);
-                return order.Status;
+                returnValue.value = order.Status;
+                return returnValue;
 
             }
             catch (Exception e)
             {
 
-                WriteLog(e.Message);
-                return "Error";
+                CommonFunctions.WriteLog(e.Message);
+                returnValue.status = "Error";
+                returnValue.message = "Some Error Occured, Try again later";
+                return returnValue;
             }
 
         }
 
-        public string GetPosition()
+        public ReturnValue<string> GetPosition()
         {
+            ReturnValue<string> returnValue = new ReturnValue<string>();
             try
             {
-                var result = Query("GET", $"/accounts");
+                var result = CommonFunctions.Query("GET", $"/accounts");
                 var accounts = JsonConvert.DeserializeObject<List<Account>>(result);
-                return accounts.Where(x => x.Currency == "BTC").Select(x => (float)x.Balance + ":" + x.Currency + " \n ").Aggregate((x1, x2) => x1 + x2);
+                returnValue.value = accounts.Where(x => x.Currency == "BTC").Select(x => (float)x.Balance + ":" + x.Currency + " \n ").Aggregate((x1, x2) => x1 + x2);
+                returnValue.status = "Success";
+                return returnValue;
             }
             catch (Exception e)
             {
 
-                WriteLog(e.Message);
-                return "Error";
+                CommonFunctions.WriteLog(e.Message);
+                returnValue.status = "Error";
+                returnValue.message = "Some Error Occured, Try again later";
+                return returnValue;
             }
 
         }
 
-        public string GetMargin()
+        public ReturnValue<string> GetMargin()
         {
+            ReturnValue<string> returnValue = new ReturnValue<string>();
             try
             {
-                var result = Query("GET", $"/accounts");
+                var result = CommonFunctions.Query("GET", $"/accounts");
                 var accounts = JsonConvert.DeserializeObject<List<Account>>(result);
-                return accounts.Where(x => x.Currency == "USD").Select(x => (int)x.Balance + ":" + x.Currency + " \n ").FirstOrDefault().ToString();
+                returnValue.status = "Success";
+                returnValue.value = accounts.Where(x => x.Currency == "USD").Select(x => (int)x.Balance + ":" + x.Currency + " \n ").FirstOrDefault().ToString();
+                return returnValue;
             }
             catch (Exception e)
             {
 
-                WriteLog(e.Message);
-                return "Error";
+                CommonFunctions.WriteLog(e.Message);
+                returnValue.status = "Error";
+                returnValue.message = "Some Error Occured, Try again later";
+                return returnValue;
             }
 
         }
 
-        public string CancelOrder(string orderId)
+        public ReturnValue<string> CancelOrder(string orderId)
         {
+            ReturnValue<string> returnValue = new ReturnValue<string>();
             try
             {
-                Query("DELETE", $"/orders/{orderId}");
+                CommonFunctions.Query("DELETE", $"/orders/{orderId}");
+                returnValue.message = "Cancelled Successfully";
+                returnValue.status = "Success";
+                return returnValue;
             }
             catch (Exception e)
             {
-                WriteLog(e.Message);
-                return "Error";
+                CommonFunctions.WriteLog(e.Message);
+                returnValue.status = "Error";
+                returnValue.message = "Some Error Occured, Try again later";
+                return returnValue;
             }
-            return "Cancelled Sucessfully";
         }
 
-        public string RealizedUnrealized()
+        public ReturnValue<string> SquareOff()
         {
-            // API Does not provide endpoint
-            return DateTime.Now.ToString();
-        }
+            ReturnValue<string> returnValue = new ReturnValue<string>();
 
-        public string SquareOff()
-        {
-
-            var result = Query("GET", $"/accounts");
+            var result = CommonFunctions.Query("GET", $"/accounts");
             var accounts = JsonConvert.DeserializeObject<List<Account>>(result).Where(x => x.Currency == "BTC" && x.Balance != 0);
             try
             {
@@ -180,145 +202,19 @@ namespace CoinbaseClientLibrary
                 {
                     this.PlaceOrder("market", account.Balance > 0 ? "sell" : "buy", "BTC-USD", account.Balance.ToString(), "");
                 }
-
-                return "Success";
+                returnValue.status = "Success";
+                returnValue.message = "Sqare off done successfully";
+                return returnValue;
             }
             catch (Exception e)
             {
-                WriteLog(e.Message);
-                return "Error";
+                CommonFunctions.WriteLog(e.Message);
+                returnValue.status = "Error";
+                returnValue.message = "Some Error Occured, Try again later";
+                return returnValue;
             }
 
         }
-
-        #region Basic Functionality
-
-        private string Query(string method, string function, Dictionary<string, string> postParameters = null)
-        {
-            string url = BaseURL + function + ((method == "GET" && postParameters != null) ? "?" + BuildQueryData(postParameters) : "");
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
-            webRequest.Method = method;
-            string body = method == "GET" ? null : BuildJSON(postParameters);
-            string expires = GetExpires().ToString();
-            var message = $"{expires}{method}{function}{body}";
-            string signature = GetHMACInHex(apiSecret, message);
-            webRequest.Headers.Add("CB-ACCESS-KEY", apiKey);
-            webRequest.Headers.Add("CB-ACCESS-TIMESTAMP", expires);
-            webRequest.Headers.Add("CB-ACCESS-SIGN", signature);
-            webRequest.Headers.Add("CB-VERSION", "2017-08-07");
-            webRequest.Headers.Add("CB-ACCESS-PASSPHRASE", "00000000");
-            webRequest.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)";
-
-            try
-            {
-                if (method == "POST")
-                {
-
-                    string postData = "";
-
-                    foreach (string key in postParameters.Keys)
-                    {
-                        postData += HttpUtility.UrlEncode(key) + "="
-                              + HttpUtility.UrlEncode(postParameters[key]) + "&";
-                    }
-
-                    byte[] data = Encoding.ASCII.GetBytes(body);
-
-                    webRequest.ContentType = "application/json";
-                    webRequest.ContentLength = data.Length;
-
-                    Stream requestStream = webRequest.GetRequestStream();
-                    requestStream.Write(data, 0, data.Length);
-                    requestStream.Close();
-                }
-                using (WebResponse webResponse = webRequest.GetResponse())
-                using (Stream str = webResponse.GetResponseStream())
-                using (StreamReader sr = new StreamReader(str))
-                {
-                    var result = sr.ReadToEnd();
-                    return result;
-                }
-
-            }
-            catch (WebException wex)
-            {
-                using (HttpWebResponse response = (HttpWebResponse)wex.Response)
-                {
-                    if (response == null)
-                        throw;
-
-                    using (Stream str = response.GetResponseStream())
-                    {
-                        using (StreamReader sr = new StreamReader(str))
-                        {
-                            return sr.ReadToEnd();
-                        }
-                    }
-                }
-            }
-        }
-
-        internal static string GetHMACInHex(string key, string data)
-        {
-            byte[] hmacKey = Convert.FromBase64String(key);
-
-            var dataBytes = Encoding.UTF8.GetBytes(data);
-
-            using (var hmac = new HMACSHA256(hmacKey))
-            {
-                var sig = hmac.ComputeHash(dataBytes);
-                return Convert.ToBase64String(sig);
-            }
-        }
-
-        private long GetExpires()
-        {
-            return (long)((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds);
-        }
-
-        private string BuildQueryData(Dictionary<string, string> param)
-        {
-            if (param == null)
-            {
-                return "";
-            }
-            StringBuilder b = new StringBuilder();
-            foreach (var item in param)
-            {
-                b.Append(string.Format("&{0}={1}", item.Key, WebUtility.UrlEncode(item.Value)));
-            }
-            try
-            {
-                return b.ToString().Substring(1);
-            }
-            catch (Exception)
-            {
-                return "";
-            }
-        }
-
-        private string BuildJSON(Dictionary<string, string> param)
-        {
-            if (param == null)
-                return "";
-
-            var entries = new List<string>();
-            foreach (var item in param)
-                entries.Add(string.Format("\"{0}\":\"{1}\"", item.Key, item.Value));
-
-            return "{" + string.Join(",", entries) + "}";
-        }
-
-        public static void WriteLog(string strMessage)
-        {
-            FileStream objFilestream = new FileStream(logPath, FileMode.Append, FileAccess.Write);
-            StreamWriter objStreamWriter = new StreamWriter((Stream)objFilestream);
-            objStreamWriter.WriteLine(strMessage);
-            objStreamWriter.Close();
-            objFilestream.Close();
-        }
-        #endregion
 
     }
 

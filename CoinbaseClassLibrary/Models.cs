@@ -81,6 +81,9 @@ namespace CoinbaseClassLibrary
         [JsonProperty("done_reason", NullValueHandling = NullValueHandling.Ignore)]
         public string DoneReason { get; set; }
     }
+
+
+   
     public enum OrderSide
     {
         [EnumMember(Value = "buy")]
